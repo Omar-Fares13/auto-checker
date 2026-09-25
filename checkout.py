@@ -2,6 +2,7 @@ import os
 import requests
 import json
 import time
+import random
 from urllib.parse import urlencode
 from datetime import datetime
 from dotenv import load_dotenv
@@ -308,11 +309,23 @@ def send_telegram_notification(title, message, status):
         print(f"[-] Error sending Telegram notification: {str(e)}")
 
 
+def apply_jitter(max_jitter_minutes: int = 5) -> int:
+    """Apply random jitter in seconds"""
+    jitter_seconds = random.randint(-max_jitter_minutes * 60, max_jitter_minutes * 60)
+    print(f"[*] Jitter applied: {jitter_seconds//60:+d}m {jitter_seconds%60:+d}s")
+    return jitter_seconds
+
 def main():
     """Main execution function"""
     try:
         if not EMAIL or not PASSWORD:
             raise ValueError("ZOHO_EMAIL and ZOHO_PASSWORD environment variables are required")
+
+        # Apply jitter
+        jitter = apply_jitter(max_jitter_minutes=5)
+        if jitter != 0:
+            print(f"[*] Waiting {abs(jitter)} seconds for jitter...")
+            time.sleep(abs(jitter))
         
         automation = ZohoPeopleAutomation(EMAIL, PASSWORD)
         
