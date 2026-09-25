@@ -1,17 +1,17 @@
-name: Zoho Check-In
+name: Zoho Check-Out
 
 on:
   schedule:
-    # 10 AM every day Sunday to Thursday
+    # 6 PM every day Sunday to Thursday
     # Adjust the time based on your timezone
     # Format: minute hour * * day-of-week
     # 0-4 = Sunday to Thursday
-    - cron: '0 4 * * 0-4'
+    - cron: '0 18 * * 0-4'
 
   workflow_dispatch:  # Allows manual triggering from GitHub UI
 
 jobs:
-  checkin:
+  checkout:
     runs-on: ubuntu-latest
     
     steps:
@@ -28,11 +28,11 @@ jobs:
           python -m pip install --upgrade pip
           pip install requests python-dotenv
       
-      - name: Run Check-In
+      - name: Run Check-Out
         env:
           ZOHO_EMAIL: ${{ secrets.ZOHO_EMAIL }}
           ZOHO_PASSWORD: ${{ secrets.ZOHO_PASSWORD }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           TEST_MODE: 'true'
-        run: python checkin.py
+        run: python checkout.py
