@@ -18,6 +18,7 @@ EMAIL = os.getenv('ZOHO_EMAIL')
 PASSWORD = os.getenv('ZOHO_PASSWORD')
 TELEGRAM_BOT_TOKEN = os.getenv('TELEGRAM_BOT_TOKEN')
 TELEGRAM_CHAT_ID = os.getenv('TELEGRAM_CHAT_ID')
+TEST_MODE = os.getenv('TEST_MODE', 'false').lower() == 'true'
 
 if not EMAIL or not PASSWORD:
     print("[-] ZOHO_EMAIL and ZOHO_PASSWORD not set")
