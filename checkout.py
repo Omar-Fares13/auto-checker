@@ -325,24 +325,20 @@ def main():
             if automation.punch_out():
                 message = "Successfully checked out"
                 print(f"\n[+] {message}")
-                if not TEST_MODE:
-                    send_telegram_notification("✅ Check-Out Successful", message, "success")
+                send_telegram_notification("✅ Check-Out Successful", message, "success")
             else:
                 message = "Check-out operation failed"
                 print(f"\n[-] {message}")
-                if not TEST_MODE:
-                    send_telegram_notification("❌ Check-Out Failed", message, "failure")
+                send_telegram_notification("❌ Check-Out Failed", message, "failure")
         else:
             message = "Sign-in failed. Cannot proceed with check-out."
             print(f"[-] {message}")
-            if not TEST_MODE:
-                send_telegram_notification("❌ Check-Out Failed", message, "failure")
+            send_telegram_notification("❌ Check-Out Failed", message, "failure")
     
     except Exception as e:
         error_message = f"An error occurred: {str(e)}"
         print(f"[-] {error_message}")
-        if not TEST_MODE:
-            send_telegram_notification("❌ Check-Out Error", error_message, "failure")
+        send_telegram_notification("❌ Check-Out Error", error_message, "failure")
 
 
 if __name__ == "__main__":
