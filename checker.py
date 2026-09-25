@@ -359,10 +359,10 @@ def main():
     print("="*60)
     
     # Apply jitter
-    jitter = apply_jitter(max_jitter_minutes=5)
-    if jitter != 0:
-        print(f"[*] Waiting {abs(jitter)} seconds for jitter...")
-        time.sleep(abs(jitter))
+    #jitter = apply_jitter(max_jitter_minutes=5)
+    #if jitter != 0:
+        #print(f"[*] Waiting {abs(jitter)} seconds for jitter...")
+        #time.sleep(abs(jitter))
     
     automation = ZohoPeopleAutomation(EMAIL, PASSWORD)
     
