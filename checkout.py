@@ -148,15 +148,46 @@ class ZohoPeopleAutomation:
                 signin_response = response.json()
                 print(f"[+] Sign-in response: {json.dumps(signin_response, indent=2)}")
                 
-                if signin_response.get('code') == 'SI200':
+                code = signin_response.get('code')
+
+                if code == 'SI200':
                     print("[+] Sign-in successful!")
-                    # Extract CSRF token for people.zoho.com
-                    if 'CSRF_TOKEN' in self.session.cookies:
-                        self.csrf_token = self.session.cookies.get('CSRF_TOKEN')
-                    print(f"[+] CSRF Token: {self.csrf_token}")
                     return True
+                
+                elif code == 'SI302':
+                    redirect_uri = (
+                        signin_response
+                        .get('passwordauth', {})
+                        .get('redirect_uri')
+                    )
+                
+                    if not redirect_uri:
+                        print("[-] SI302 received but no redirect URI was provided.")
+                        return False
+                
+                    print("[*] Following Zoho announcement redirect...")
+                    print(f"[*] Redirect URL: {redirect_uri}")
+                
+                    redirect_response = self.session.get(
+                        redirect_uri,
+                        allow_redirects=True
+                    )
+                
+                    print(f"[+] Announcement status: {redirect_response.status_code}")
+                    print(f"[+] Final URL: {redirect_response.url}")
+                
+                    if redirect_response.status_code == 200:
+                        print("[+] Announcement redirect completed.")
+                        return True
+                
+                    print("[-] Announcement redirect failed.")
+                    return False
+                
                 else:
-                    print(f"[-] Sign-in failed: {signin_response.get('message')}")
+                    print(
+                        f"[-] Sign-in failed: "
+                        f"{signin_response.get('message')}"
+                    )
                     return False
             else:
                 print(f"[-] Sign-in failed with status {response.status_code}")
