@@ -188,6 +188,13 @@ class ZohoPeopleAutomation:
             'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
             'X-Requested-With': 'XMLHttpRequest',
         }
+
+        print(f"[DEBUG] URL: {url}")
+        print(f"[DEBUG] Params: {params}")
+        print(f"[DEBUG] Headers: {headers}")
+        print(f"[DEBUG] Body: {json.dumps(password_data)}")
+        print(f"[DEBUG] Identifier: {self.identifier}")
+        print(f"[DEBUG] Digest: {self.digest[:50]}...")
         
         try:
             response = self.session.post(
@@ -197,19 +204,35 @@ class ZohoPeopleAutomation:
                 headers=headers,
                 timeout=10
             )
+
+            print(f"[DEBUG] Response Status: {response.status_code}")
+            print(f"[DEBUG] Response Headers: {dict(response.headers)}")
+            print(f"[DEBUG] Response Body: {response.text}")
             
             if response.status_code == 200:
-                signin_response = response.json()
-                
-                if signin_response.get('code') == 'SI200':
-                    print("[+] Sign-in successful")
-                    return True
+                try:
+                    signin_response = response.json()
+                    print(f"[DEBUG] JSON Response: {json.dumps(signin_response, indent=2)}")
+                    
+                    if signin_response.get('code') == 'SI200':
+                        print("[+] Sign-in successful")
+                        return True
+                    else:
+                        print(f"[-] Sign-in code was: {signin_response.get('code')}")
+                        print(f"[-] Full response: {signin_response}")
+                        return False
+                except json.JSONDecodeError as e:
+                    print(f"[-] Failed to parse JSON response: {e}")
+                    print(f"[-] Raw response: {response.text}")
+                    return False
             
-            print(f"[-] Sign-in failed: {response.status_code}")
+            print(f"[-] Sign-in failed with status {response.status_code}")
             return False
                 
         except Exception as e:
             print(f"[-] Error during sign-in: {e}")
+            import traceback
+            traceback.print_exc()
             return False
     
     def get_csrf_token_from_people(self):
