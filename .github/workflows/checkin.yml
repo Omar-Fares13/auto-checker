@@ -2,37 +2,35 @@ name: Zoho Check-In
 
 on:
   schedule:
-    # 10 AM every day Sunday to Thursday
-    # Adjust the time based on your timezone
-    # Format: minute hour * * day-of-week
-    # 0-4 = Sunday to Thursday
-    - cron: '0 4 * * 0-4'
+    # 10:00 AM Cairo time, Sunday through Thursday
+    - cron: '0 10 * * 0-4'
+      timezone: "Africa/Cairo"
 
-  workflow_dispatch:  # Allows manual triggering from GitHub UI
+  workflow_dispatch:
 
 jobs:
   checkin:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
-      
+        uses: actions/checkout@v4
+
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.10'
-      
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install requests python-dotenv
-      
+
       - name: Run Check-In
         env:
           ZOHO_EMAIL: ${{ secrets.ZOHO_EMAIL }}
           ZOHO_PASSWORD: ${{ secrets.ZOHO_PASSWORD }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-          TEST_MODE: 'true'
+          TEST_MODE: 'false'
         run: python checkin.py
