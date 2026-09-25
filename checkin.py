@@ -336,14 +336,12 @@ def main():
         else:
             message = "Sign-in failed. Cannot proceed with check-in."
             print(f"[-] {message}")
-            if not TEST_MODE:
-                send_telegram_notification("❌ Check-In Failed", message, "failure")
+            send_telegram_notification("❌ Check-In Failed", message, "failure")
     
     except Exception as e:
         error_message = f"An error occurred: {str(e)}"
         print(f"[-] {error_message}")
-        if not TEST_MODE:
-            send_telegram_notification("❌ Check-In Error", error_message, "failure")
+        send_telegram_notification("❌ Check-In Error", error_message, "failure")
 
 
 if __name__ == "__main__":
