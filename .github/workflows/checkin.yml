@@ -2,8 +2,8 @@ name: Zoho Check-In
 
 on:
   schedule:
-    # 10:00 AM Cairo time, Sunday through Thursday
-    - cron: '0 10 * * 0-4'
+    # 09:55 AM Cairo time, Sunday through Thursday
+    - cron: '55 9 * * 0-4'
       timezone: "Africa/Cairo"
 
   workflow_dispatch:
