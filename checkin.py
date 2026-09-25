@@ -328,13 +328,11 @@ def main():
             if automation.punch_in():
                 message = "Successfully checked in"
                 print(f"\n[+] {message}")
-                if not TEST_MODE:
-                    send_telegram_notification("✅ Check-In Successful", message, "success")
+                send_telegram_notification("✅ Check-In Successful", message, "success")
             else:
                 message = "Check-in operation failed"
                 print(f"\n[-] {message}")
-                if not TEST_MODE:
-                    send_telegram_notification("❌ Check-In Failed", message, "failure")
+                send_telegram_notification("❌ Check-In Failed", message, "failure")
         else:
             message = "Sign-in failed. Cannot proceed with check-in."
             print(f"[-] {message}")
