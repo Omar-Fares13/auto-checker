@@ -1,0 +1,59 @@
+name: Schedule Test
+
+on:
+  schedule:
+    - cron: '*/5 * * * *'
+      timezone: "Africa/Cairo"
+
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Send Telegram notification
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          EVENT_NAME: ${{ github.event_name }}
+        run: |
+          python - <<'PY'
+          import os
+          import json
+          import urllib.request
+          from datetime import datetime
+          from zoneinfo import ZoneInfo
+
+          token = os.environ["TELEGRAM_BOT_TOKEN"]
+          chat_id = os.environ["TELEGRAM_CHAT_ID"]
+          event = os.environ["EVENT_NAME"]
+
+          now = datetime.now(ZoneInfo("Africa/Cairo"))
+          message = (
+              "GitHub Actions schedule test\n\n"
+              f"Time: {now.strftime('%Y-%m-%d %H:%M:%S')} (Cairo)\n"
+              f"Trigger: {event}\n"
+              "Status: Workflow executed successfully."
+          )
+
+          url = f"https://api.telegram.org/bot{token}/sendMessage"
+          data = json.dumps({
+              "chat_id": chat_id,
+              "text": message
+          }).encode()
+
+          request = urllib.request.Request(
+              url,
+              data=data,
+              headers={"Content-Type": "application/json"}
+          )
+
+          with urllib.request.urlopen(request) as response:
+              result = json.loads(response.read())
+
+          if not result.get("ok"):
+              raise RuntimeError("Telegram notification failed")
+
+          print("Telegram notification sent successfully.")
+          PY
