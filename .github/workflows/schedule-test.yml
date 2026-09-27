@@ -2,8 +2,7 @@ name: Schedule Test
 
 on:
   schedule:
-    - cron: '*/5 * * * *'
-      timezone: "Africa/Cairo"
+    - cron: '7,17,27,37,47,57 * * * *'
 
   workflow_dispatch:
 
